@@ -9,6 +9,13 @@ snake[0] = {
     y: 8 * box
 }
 
+//pontuação
+let score = 0;
+
+//carregar imagem da comida
+const foodImg = new Image();
+foodImg.src = "food.png";
+
 //movimentação da cobrinha, iniciando pela direita
 let direction = 'right'; 
 
@@ -22,22 +29,27 @@ let food = {
 
     //criando o background (tela de jogo)
     function createrBG() {
-        context.fillStyle = 'black'; //estilo do jogo 
+        context.fillStyle = 'silver'; //estilo do jogo 
         context.fillRect(0, 0, 16 * box, 16 * box); //desenha a área onde o jogo vai acontecer
     }
 
     //criando a cobrinha
     function createSnake() {
-        for(i=0; i < snake.length; i++) {
-            context.fillStyle = 'white';
-            context.fillRect(snake[i].x, snake[i].y, box, box);
+        for (i = 0; i < snake.length; i++){
+            context.fillStyle = "green";
+            if (i == 0) context.fillStyle = "darkgreen";
+            context.fillRect(snake[i].x, snake[i].y, 25, 25);
+
+           
         }
     }
 
     //criando a comida
     function createFood() {
-        context.fillStyle = 'grey'; 
-        context.fillRect(food.x, food.y, box, box);
+        foodImg.src = "img/food.png";
+       
+        context.drawImage(foodImg, food.x, food.y);
+       
     }
 
     //event listener recebe o clique
@@ -54,13 +66,14 @@ let food = {
         //não tem como fazer o caminho inverso da cobrinha, senão ela teria que ter duas cabeças nesse caso, por ex esta indo para a esquerda e clicar para ir para a direita
     }
 
+    
     //iniciando o jogo
     function startGame() {
-        //plano cartesiano: eixo X e eixo Y, um até 16 e outro até -16 (nossa box é tamanho 32)
-        if(snake[0].x > 15 * box && direction == 'right') snake[0].x = 0;
+       
+        /* if(snake[0].x > 15 * box && direction == 'right') snake[0].x = 0;
         if(snake[0].x < 0 && direction == 'left') snake[0].x = 16 * box;
         if(snake[0].y > 15 * box && direction == 'down') snake[0].y = 0;
-        if(snake[0].y < 0 && direction == 'up') snake[0].y = 16 * box;
+        if(snake[0].y < 0 && direction == 'up') snake[0].y = 16 * box; */
 
         //quando a posição 1 da cobrinha (corpo) se chocar com outra parte do corpo ou cabeça, um alert é mostrado na tela
         for(i = 1; i < snake.length; i++){
@@ -68,6 +81,7 @@ let food = {
             clearInterval(jogo);
             alert('Perdeu :/')
             }
+           
         }
 
         createrBG();
@@ -77,7 +91,11 @@ let food = {
          //posição x e y iniciais da cobrinha
         let snakeX = snake[0].x;
         let snakeY = snake[0].y;
-        
+
+        if (snakeX < 0 || snakeY < 0 || snakeX >= (15 + 1) * box|| snakeY >= (15 + 1) * box ){
+            clearInterval(jogo);
+            alert('Perdeu :/')
+        }
         //condicionais para cada posição, adicionando ou diminuindo box (plano cartesiano)
         if (direction == 'right') snakeX += box; 
         if (direction == 'left') snakeX -= box;
@@ -90,8 +108,11 @@ let food = {
             snake.pop();
         }
         else {
+            
             food.x = Math.floor(Math.random() * 15 + 1) * box;
             food.y = Math.floor(Math.random() * 15 + 1) * box;
+            score++;
+            document.getElementById("score").innerHTML = ("Score:" + score);
         }
 
         //acrescenta um elemento a frente do array (criar a cabeça dela)
@@ -102,7 +123,10 @@ let food = {
 
         //o unshift adiciona um ou mais elementos no início do array e retorna o número de elementos atualizado
         snake.unshift(newHead);
-    
-    }
 
-let jogo = setInterval(startGame, 120); //a cada x milissegundos o jogo atualiza
+       
+}
+    
+    
+
+let jogo = setInterval(startGame, 110); //a cada x milissegundos o jogo atualiza
